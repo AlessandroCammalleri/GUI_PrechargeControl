@@ -1,8 +1,6 @@
-// ignore_for_file: prefer_const_constructors, avoid_function_literals_in_foreach_calls, use_build_context_synchronously, non_constant_identifier_names, avoid_print, prefer_interpolation_to_compose_strings, prefer_typing_uninitialized_variables, unused_import
-
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'main.dart';
+import 'package:fl_chart/fl_chart.dart';
 
 class DebugPage extends StatefulWidget {
   const DebugPage({super.key});
@@ -14,13 +12,82 @@ class DebugPage extends StatefulWidget {
 class _DebugPageState extends State<DebugPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: CircularProgressIndicator(
-          color: Colors.black,
-          strokeWidth: 10.0,
-        ),
-      ),
-    );
+    return SafeArea(
+        child: Scaffold(
+            appBar: AppBar(
+              title: const Text("PreCharge Graphs"),
+              automaticallyImplyLeading: false,
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) {
+                      return const MyApp();
+                    },
+                  ));
+                },
+                icon: const Icon(Icons.arrow_back_ios),
+              ),
+              actions: [
+                PopupMenuButton(
+                    itemBuilder: (context) => [
+                          PopupMenuItem(
+                            child: Text("Precharge 1"),
+                            value: 1,
+                            onTap: () {
+                              setState(() {});
+                            },
+                          ),
+                          PopupMenuItem(
+                            child: Text("Precharge 2"),
+                            value: 2,
+                            onTap: () {
+                              setState(() {});
+                            },
+                          ),
+                          PopupMenuItem(
+                            child: Text("Precharge 3"),
+                            value: 3,
+                            onTap: () {
+                              setState(() {});
+                            },
+                          )
+                        ])
+              ],
+            ),
+            body: Column(
+              children: [
+                Flexible(
+                  flex: 5,
+                  child: Center(
+                    child: LineChart(
+                      LineChartData(
+                        lineBarsData: [
+                          LineChartBarData(
+                            isCurved: false,
+                            dotData: FlDotData(show: true),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Flexible(
+                  flex: 5,
+                  child: Center(
+                    child: LineChart(
+                      LineChartData(
+                        lineBarsData: [
+                          LineChartBarData(
+                            isCurved: false,
+                            dotData: FlDotData(show: true),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              ],
+            )));
   }
 }
+

@@ -7,12 +7,12 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
 
   const AppButton({
-    Key? key,
+    key,
     required this.operation,
     required this.description,
     this.operationColor = Colors.black,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
