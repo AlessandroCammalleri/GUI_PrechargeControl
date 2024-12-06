@@ -1,6 +1,14 @@
 import 'package:flutter/material.dart';
 import 'main.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'dart:typed_data';
+
+import 'usbcommunication.dart';
+
+String id_message = frame.substring(0, 8);
+String dlc_message = frame.substring(8, 10);
+String payload = frame.substring(10);
 
 class DebugPage extends StatefulWidget {
   const DebugPage({super.key});
@@ -12,6 +20,15 @@ class DebugPage extends StatefulWidget {
 class _DebugPageState extends State<DebugPage> {
   @override
   Widget build(BuildContext context) {
+    print('Id Message: $id_message');
+    print('Dlc: $dlc_message');
+    print('Payload: $payload');
+
+    reader.close();
+    port1.dispose();
+
+    checkdlc();
+
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
@@ -89,5 +106,9 @@ class _DebugPageState extends State<DebugPage> {
               ],
             )));
   }
-}
 
+
+
+  void checkdlc(){
+     }
+}

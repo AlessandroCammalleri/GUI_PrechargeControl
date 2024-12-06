@@ -1,15 +1,14 @@
 // ignore_for_file: avoid_print, override_on_non_overriding_member
 
-import 'dart:typed_data';
-
 import 'package:ae_project/usbcommunication.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'app_button.dart';
-
-import 'debug_page.dart';
+import 'package:flutter_libserialport/flutter_libserialport.dart';
+import 'dart:typed_data';
 
 bool debug = true;
+
+
 void main() {
   runApp(const MyApp());
 }
@@ -18,7 +17,9 @@ class MyApp extends StatelessWidget {
   const MyApp({key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {   
+    
+
     return MaterialApp(
       title: 'AE PROJECT',
       theme: ThemeData(
@@ -106,4 +107,10 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+}
+
+Uint8List _stringToUint8List(String data) {
+  List<int> codeUnits = data.codeUnits;
+  Uint8List uint8list = Uint8List.fromList(codeUnits);
+  return uint8list;
 }

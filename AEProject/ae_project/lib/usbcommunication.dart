@@ -8,6 +8,26 @@ import 'package:number_system/number_system.dart';
 
 import 'main.dart';
 
+String frame = '';
+
+SerialPort port1 = SerialPort("COM3");
+List<String> availablePort = SerialPort.availablePorts;
+var config = SerialPortConfig()
+  ..baudRate = 115200
+  ..bits = 8
+  ..parity = SerialPortParity.none
+  ..stopBits = 1
+  ..xonXoff = 0
+  ..rts = 1
+  ..cts = 0
+  ..dsr = 0
+  ..dtr = 1;
+
+SerialPortReader reader = SerialPortReader(port1);
+Stream<String> upcomingdata = reader.stream.map((data) {
+  return String.fromCharCodes(data);
+});
+
 class Usbcommunication extends StatefulWidget {
   const Usbcommunication({super.key});
 
@@ -15,13 +35,14 @@ class Usbcommunication extends StatefulWidget {
   State<Usbcommunication> createState() => _UsbCommunication();
 }
 
-List<String> availablePorts = SerialPort.availablePorts;
-//print(availablePorts);
-SerialPort port1 = SerialPort('COM3');
-
 class _UsbCommunication extends State<Usbcommunication> {
   @override
   Widget build(BuildContext context) {
+    print(availablePort);
+
+    port1.config = config;
+    print(port1.openReadWrite());
+
     if (debug) {
       debugCommunication();
     } else {
@@ -39,13 +60,10 @@ class _UsbCommunication extends State<Usbcommunication> {
   }
 
   void debugCommunication() async {
-    usbinitcomm();
     sendMessage(debug);
-    collectSamples();
-    separateSamples_charge();
-    separateSamples_type();
+    receiveMessage();
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 5));
 
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (BuildContext context) {
@@ -54,12 +72,10 @@ class _UsbCommunication extends State<Usbcommunication> {
   }
 
   void prechargeCommunication() async {
-    usbinitcomm();
     sendMessage(debug);
-    collectSamples();
-    separateSamples_type();
+    receiveMessage();
 
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 5));
 
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (BuildContext context) {
@@ -67,34 +83,29 @@ class _UsbCommunication extends State<Usbcommunication> {
     }));
   }
 
-  void usbinitcomm() {
+  void sendMessage(bool debug) async {
+    if (debug) {
+      try {
+        //message sent to the MicroController
+        print(port1.write(_stringToUint8List('Message in hexadecimal form')));
+      } on SerialPort catch (err, _) {
+        print(SerialPort.lastError);
+      }
+    } else {
+      String message = '#2';
+    }
+  }
+
+  void receiveMessage() async {
     try {
-      port1.openReadWrite();
-      final config = SerialPortConfig();
-      config.baudRate = 115200;
-      port1.config = config;
-    } on SerialPortError catch (err, _) {
+      upcomingdata.listen((data) {
+        print('Read Data: $data');
+        frame += data;
+      });
+    } on SerialPort catch (err, _) {
       print(SerialPort.lastError);
     }
   }
-
-  void sendMessage(bool debug) {
-    if (debug) {
-      //message
-      String message = '#1';
-      print(_byteToUint8List(message.hexToDEC()));
-      port1.write(_byteToUint8List(message.hexToDEC()));
-    } else {
-      //message
-      String message = '#2';
-      port1.write(_byteToUint8List(message.hexToDEC()));
-      //message
-    }
-  }
-
-  void collectSamples() {}
-  void separateSamples_charge() {}
-  void separateSamples_type() {}
 
   Uint8List _stringToUint8List(String data) {
     List<int> codeUnits = data.codeUnits;
