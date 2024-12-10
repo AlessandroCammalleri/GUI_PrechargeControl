@@ -10,7 +10,7 @@ import 'main.dart';
 
 String frame = '';
 
-SerialPort port1 = SerialPort("COM3");
+SerialPort port1 = SerialPort("COM4");
 List<String> availablePort = SerialPort.availablePorts;
 var config = SerialPortConfig()
   ..baudRate = 115200
